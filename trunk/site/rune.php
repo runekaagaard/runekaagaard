@@ -2,35 +2,47 @@
 
 echo markdown('
 
-## Super awesome
+So this is my new page about me and blah blah blah. I am discussing
+various stuff about various things that does something and blah:
 
-So this is the super nice markdown language.
+* item1
+* item2
+* * item3
+* * owejfowe jewo fjwoef jwoef jw
+* * * wepfjwe pew jfpweif jpew jfpew jfpew jfpewfj
+* * fiwejfew pwejf wiejf
+* yir
 
-Mark me down before you gogo!
+## Subheading
+Talking about different stuff also
+So this is my new page about me and blah blah blah. I am discussing
+various stuff about various things that does something and blah
+So this is my new page about me and blah blah blah. I am discussing
+various stuff about various things that does something and blah So this is my new page about me and blah blah blah. I am discussing
+various stuff about various things that does something and blah So this is my new page about me and blah blah blah. I am discussing
+various stuff about various things that does something and blah.
 
-* list
-* last
-* lust
-* lost
-* * indent
+### Subsub 1
+Talking about different stuff also
+So this is my new page about me and blah blah blah. I am discussing
+various stuff about various things that does something and blah
+So this is my new page about me and blah blah blah. I am discus
 
-And now an ordered list:
+### Subsub 2
+Talking about different stuff also
+So this is my new page about me and blah blah blah. I am discussing
+various stuff about various things that does something and blah
+So this is my new page about me and blah blah blah. I am discus
 
-1. yir
-1. upsala
-1. nigitimou
+## Subheading2
+Talking about different stuff also
+So this is my new page about me and blah blah blah. I am discussing
+various stuff about various things that does something and blah
+So this is my new page about me and blah blah blah. I am discus
 
-## This is h2
-### This is h3
-#### This is h4
-##### This is h5
-
-This is *em*
-
-This is **bold**
 ');
 
 return yaml('
-tags: [about, Rune, Kaagaard, cv, details]
-created: 2009-07-23
+    tags: [about, Rune, Kaagaard, cv, details]
+    created: 2009-07-23
 ');

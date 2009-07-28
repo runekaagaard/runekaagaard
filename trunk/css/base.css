@@ -1,0 +1,47 @@
+html {
+  background-color: #C6E5F2;
+  font-family: georgia;
+  font-size: 15px;
+}
+
+body {
+  margin: 8px auto 8px auto;
+  width: 980px;
+}
+
+h6 { font-size: 15px; line-height: 15px; font-weight: bold; color: #272D36; padding-top: 2px;}
+h5 { font-size: 16px; line-height: 16px; font-weight: bold; color: #272D36; padding-top: 2px;}
+h4 { font-size: 18px; line-height: 18px; font-weight: bold; color: #272D36; padding-top: 4px;}
+h3 { font-size: 20px; line-height: 20px; font-weight: bold; color: green; padding-top: 6px;}
+h2 { font-size: 26px; line-height: 26px; font-weight: bold; color: #2abada; padding-top: 10px;}
+h1 { font-size: 40px; line-height: 40px; font-weight: bold; color: #272D36; padding-top: 14px;}
+
+p {
+  margin: 2px 0px 0px 2px;
+}
+
+ul {
+	list-style-image: url(../images/bullet.gif);
+	list-style-type: square;
+	margin:0.3em 0 0 1.5em;
+	padding-left: 10px;
+}
+
+ul ul, ul ul ul, ul ul ul ul, ul ul ul ul ul, ul ul ul ul ul ul ul {
+	padding: 0;
+}
+
+ol {
+	list-style-type: decimal;
+	margin:0.3em 0 0 1.5em;
+	padding-left: 14px;
+}
+
+ol ol, ol ol ol, ol ol ol ol, ol ol ol ol ol, ol ol ol ol ol ol {
+	padding: 0;
+}
+
+.clear {
+	clear: both;
+	height: 0px;
+}
