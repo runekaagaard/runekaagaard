@@ -1,3 +1,64 @@
+#content {
+  background-color: white;
+  padding: 8px;
+}
+
+/* logo */
+
+h1.first {
+	padding-top: 0;
+}
+
+.logo {
+	background: transparent url(http://api.ning.com/files/OHyCAfaJIRV2o-BuJyDGP*Qv6d7EFuzq*iqWOV8Gd8ARErZYj2Or-o7xRQDpf9yfFmAEEpJUFs1m-jcWaKw71GaKRZW9tJ6S/saguaroMoon_seip.jpg) no-repeat;
+	background: transparent url(http://upload.wikimedia.org/wikipedia/en/7/72/Comet_McNaught_with_moon_setting_over_sea.JPG) no-repeat;
+	background: transparent url(/images/logo.jpg) no-repeat;
+	background: #27303F none;
+	/* border-bottom: solid 6px #e6f1f3; */
+}
+
+.logo .txt h1 { 
+	font: bold 55px/55px "Arial";
+	line-height: 55px;
+	letter-spacing: -3px;
+}
+
+.logo .txt h1 a, .logo .txt h1 a:visited, .logo .txt h1 a:hover { 
+		color:#272d36;
+		color: white;
+		text-decoration: none;
+}
+
+.logo .txt span {
+	font: bold 30px/30px "Arial";
+	letter-spacing: -1px;
+	color: #2abada;
+	position: relative;
+	top: -5px;
+}
+
+#menu {
+  background-color: #C6E5F2; /*#DEF1F9 */
+  padding: 10px 2px 10px 6px;
+}
+
+#menu ul {
+  margin: 0;
+}
+
+#menu ul li {
+  list-style: none outside none;
+  float: left;
+}
+
+#menu ul li a {
+	color: #272D36;
+	font-weight:bold;
+	padding: 6px 12px;
+	text-decoration:none;
+}
+
 #menu ul li.active a {
-	color: red;
+	background-color: #272D36;
+	color: white;
 }

@@ -1,5 +1,5 @@
 <?php
-class dispatcher {
+class frontcontroller {
 	public $uri = 'rune';
 	private $content_file = 'site/rune.php';
 	private static $instance;
@@ -17,7 +17,8 @@ class dispatcher {
 
 	public function dispatch() {
 		if (!empty($_GET['uri'])) $this->parse_request();
-		$html = $this->render_page();
+		echo $this->render_page();
+		return;
 		$config = array(
 		   'indent'         => true,
 		   'indent-spaces' => 4,
