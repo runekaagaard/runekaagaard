@@ -10,7 +10,7 @@ foreach ($lib_files as $lib_file) require $lib_file;
 cfg::set_variables();
 
 //cache
-if (cfg::$cache) apc_clear_cache();
+if (!cfg::$cache) apc_clear_cache();
 
 //dispatch
 frontcontroller::get_instance()->dispatch();

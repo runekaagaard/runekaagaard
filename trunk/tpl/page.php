@@ -13,23 +13,29 @@
 
 	</head>
 	<body>
-		<div class="logo">
-			 <div class="txt">
-				<h1><a href="http://www.techfounder.net/">rune - </a>
-					<span>blog on music, ideas, code and moonlight</span>
-				</h1>
-				
+		<div id="header">
+			<div class="logo">
+				 <div class="txt">
+					<h1><a href="http://www.techfounder.net/">rune - </a>
+						<span>blog on music, ideas, code and fireflies</span>
+					</h1>
+
+				</div>
 			</div>
 		</div>
 
-		<?=parse('tpl/menu.php')?>
 		
-    <div id="content">
-      <h1 class="first"><?=$title?></h1>
-      <?=$content?>
-    </div>
+		
+		<div id="main">
+			<?=parse('tpl/menu.php')?>
 
-	<?=parse('tpl/w3c.php')?>
-	
+			<div id="content">
+			  <h1 class="first"><?=$title?></h1>
+			  <?=$content?>
+			</div>
+
+			<?//=parse('tpl/w3c.php')?>
+			
+		</div>
 	</body>
 </html>
