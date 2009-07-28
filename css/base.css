@@ -4,11 +4,6 @@ html {
   font-size: 15px;
 }
 
-body {
-  margin: 8px auto 8px auto;
-  width: 980px;
-}
-
 h6 { font-size: 15px; line-height: 15px; font-weight: bold; color: #272D36; padding-top: 2px;}
 h5 { font-size: 16px; line-height: 16px; font-weight: bold; color: #272D36; padding-top: 2px;}
 h4 { font-size: 18px; line-height: 18px; font-weight: bold; color: #272D36; padding-top: 4px;}

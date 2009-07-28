@@ -31,11 +31,11 @@ class frontcontroller {
 	}
 
 	private function parse_request() {
-		$this->uri = rtrim($_GET['uri'], '/');
-		if (is_dir("site/$this->uri")) {
-			$this->content_file = "site/$this->uri/index.php";
+		$uri = trim(cfg::$uri, '/');
+		if (is_dir("site/$uri")) {
+			$this->content_file = "site/$uri/index.php";
 		} else {
-			$this->content_file = "site/$this->uri.php";
+			$this->content_file = "site/$uri.php";
 		}
 		if (!file_exists($this->content_file)) redirect('404');
 	}
