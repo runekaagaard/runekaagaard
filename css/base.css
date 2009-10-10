@@ -7,9 +7,9 @@ html {
 h6 { font-size: 15px; line-height: 15px; font-weight: bold; color: #272D36; padding-top: 2px;}
 h5 { font-size: 16px; line-height: 16px; font-weight: bold; color: #272D36; padding-top: 2px;}
 h4 { font-size: 18px; line-height: 18px; font-weight: bold; color: #272D36; padding-top: 4px;}
-h3 { font-size: 20px; line-height: 20px; font-weight: bold; color: green; padding-top: 6px;}
-h2 { font-size: 26px; line-height: 26px; font-weight: bold; color: #2abada; padding-top: 10px;}
-h1 { font-size: 40px; line-height: 40px; font-weight: bold; color: #272D36; padding-top: 14px;}
+h3 { font-size: 20px; line-height: 20px; font-weight: bold; padding-top: 6px;}
+h2 { font-size: 26px; line-height: 26px; font-weight: bold; color: #2192AB;  padding-top: 10px;}
+h1 { font-size: 40px; line-height: 40px; font-weight: bold; padding-top: 14px;}
 
 p {
   margin: 2px 0px 0px 2px;
