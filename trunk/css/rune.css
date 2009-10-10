@@ -1,7 +1,7 @@
 #header {
-	background: transparent url(http://api.ning.com/files/OHyCAfaJIRV2o-BuJyDGP*Qv6d7EFuzq*iqWOV8Gd8ARErZYj2Or-o7xRQDpf9yfFmAEEpJUFs1m-jcWaKw71GaKRZW9tJ6S/saguaroMoon_seip.jpg) no-repeat;
+	/*background: transparent url(http://api.ning.com/files/OHyCAfaJIRV2o-BuJyDGP*Qv6d7EFuzq*iqWOV8Gd8ARErZYj2Or-o7xRQDpf9yfFmAEEpJUFs1m-jcWaKw71GaKRZW9tJ6S/saguaroMoon_seip.jpg) no-repeat;
 	background: transparent url(http://upload.wikimedia.org/wikipedia/en/7/72/Comet_McNaught_with_moon_setting_over_sea.JPG) no-repeat;
-	background: transparent url(/images/logo.jpg) no-repeat;
+	background: transparent url(/images/logo.jpg) no-repeat;*/
 	background: #27303F none;
 }
 
@@ -42,7 +42,6 @@ h1.first {
 
 #menu {
 	background-color: #C6E5F2;
-	height: 36px;
 }
 
 #menu ul {
@@ -53,7 +52,6 @@ h1.first {
 }
 
 #menu ul li {
-	
 	margin-right: 12px;
 	float: left;
 	padding: 12px 4px 12px 4px;
@@ -65,8 +63,7 @@ h1.first {
 	text-decoration:none;
 }
 
-#menu ul li.active, #menu ul li.active a {
+#menu ul li.active, #menu ul li.active a, #menu ul li:hover {
 	background-color: white;
 	color: #272D36;
-	height: 36px;
 }
