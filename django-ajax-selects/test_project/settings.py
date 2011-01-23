@@ -103,7 +103,7 @@ INSTALLED_APPS = (
 
 AJAX_LOOKUP_CHANNELS = {
     # the simplest case, pass a DICT with the model and field to search against :
-    'musician' : dict(model='test_app.musician',search_field='first_name'),
+    #'musician' : dict(model='test_app.musician',search_field='first_name'),
     # this generates a simple channel
     # specifying the model Track in the music app, and searching against the 'title' field
 
