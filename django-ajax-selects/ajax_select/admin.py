@@ -9,7 +9,6 @@ class AjaxSelectAdmin(admin.ModelAdmin):
     
     def get_form(self, request, obj=None, **kwargs):
         form = super(AjaxSelectAdmin,self).get_form(request,obj,**kwargs)
-        
         autoselect_fields_check_can_add(form,self.model,request.user)
         return form
 

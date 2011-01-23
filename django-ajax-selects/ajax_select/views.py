@@ -35,8 +35,8 @@ def ajax_lookup(request,channel):
             results.append( "|".join((unicode(item.pk),itemf,resultf)) )
         return HttpResponse("\n".join(results))
     elif 'id' in request_by_method:
-        instances = lookup_channel.get_query_by_id(request_by_method['id'],request)
-        return HttpResponse(format_item(lookup_channel, instances[0]))
+        instance = lookup_channel.get_query_by_id(request_by_method['id'],request)
+        return HttpResponse(format_item(lookup_channel, instance))
     else:
         return empty_response()
 
