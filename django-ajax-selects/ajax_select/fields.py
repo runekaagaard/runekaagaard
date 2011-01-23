@@ -42,7 +42,12 @@ class AutoCompleteSelectWidget(forms.widgets.TextInput):
             current_result = mark_safe(lookup.format_item( obj ) )
         else:
             current_result = ''
-
+            
+        try:
+            search_help = lookup.get_search_help()
+        except AttributeError:
+             search_help = None
+             
         context = {
                 'name': name,
                 'html_id' : self.html_id,
@@ -53,7 +58,8 @@ class AutoCompleteSelectWidget(forms.widgets.TextInput):
                 'extra_attrs': mark_safe(flatatt(final_attrs)),
                 'func_slug': self.html_id.replace("-",""),
                 'add_link' : self.add_link,
-                'admin_media_prefix' : settings.ADMIN_MEDIA_PREFIX
+                'admin_media_prefix' : settings.ADMIN_MEDIA_PREFIX,
+                'search_help': search_help,
                 }
 
         return mark_safe(render_to_string(('autocompleteselect_%s.html' % self.channel, 'autocompleteselect.html'),context))
@@ -156,11 +162,11 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
             'current_name':current_name,
             'current_ids':current_ids,
             'current_reprs':current_reprs,
-            'help_text':help_text,
+            'help_text':self.help_text if self.show_help_text else '',
             'extra_attrs': mark_safe(flatatt(final_attrs)),
             'func_slug': self.html_id.replace("-",""),
             'add_link' : self.add_link,
-            'admin_media_prefix' : settings.ADMIN_MEDIA_PREFIX
+            'admin_media_prefix' : settings.ADMIN_MEDIA_PREFIX,
         }
         return mark_safe(render_to_string(('autocompleteselectmultiple_%s.html' % self.channel, 'autocompleteselectmultiple.html'),context))
 

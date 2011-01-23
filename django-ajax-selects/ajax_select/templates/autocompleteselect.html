@@ -3,6 +3,9 @@
 {% if add_link %}
 	<a href="{{ add_link }}" class="add-another" id="add_{{ html_id }}" onclick="return showAddAnotherPopup(this);"> <img src="{{ admin_media_prefix }}img/admin/icon_addlink.gif" width="10" height="10" alt="Add Another"></a>
 {% endif %}
+{% if search_help %}
+    <span style="color: grey;">&nbsp;({{search_help|safe}})</span>
+{% endif %}
 {% block help %}{# {% if help_text %}<p class="help">{{help_text}}</p>{% endif %} #}{% endblock %}
 <div id="{{html_id}}_on_deck" class="results_on_deck"><div>{{current_result|safe}}</div></div>
 <input type="hidden" name="{{name}}" id="{{html_id}}" value="{{current_id}}" />
@@ -12,7 +15,8 @@ jQuery(document).ready(function($){{% block script %}
 		width: 320,
 		formatItem: function(row) { return row[2]; },
 		formatResult: function(row) { return row[1]; },
-		dataType: "text"
+		dataType: "text",
+		max: 100
 	});
 	function receiveResult(event, data) {
 		prev = $("#{{html_id}}").val();
@@ -46,10 +50,12 @@ jQuery(document).ready(function($){{% block script %}
 		addKiller_{{ func_slug }}(null,$("#{{ html_id }}").val());
 	}
 	$("#{{ html_id }}").bind('didAddPopup',function(event,id,repr) {
-		data = Array();
-		data[0] = id;
-		data[1] = repr;
-		receiveResult(null,data);
+		$.get('{{lookup_url}}?id='+id, function(response) {
+			data = Array();
+			data[0] = id;
+			data[1] = response;
+			receiveResult(null,data);
+		});
 	});
 {% block extra_script %}{% endblock %}
 {% endblock %}});
