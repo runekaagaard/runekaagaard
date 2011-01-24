@@ -28,6 +28,6 @@ class MusicianLookup(AjaxSelectLookup):
     
     def render_selected(self, obj): return u"%s - %s" % (obj, obj.instrument)
 
-ajax_select.register(MusicianLookup, AlbumAdmin)    
+ajax_select.register(MusicianLookup, AlbumAdmin)
 admin.site.register(Musician, MusicianAdmin)
 admin.site.register(Album, AlbumAdmin)

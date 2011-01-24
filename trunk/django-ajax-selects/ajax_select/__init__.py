@@ -12,13 +12,26 @@ from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _, ugettext
 
 def register(lookup, admin=None):
-    channel_name = lookup.__name__.lower()
-    settings.AJAX_LOOKUP_CHANNELS[channel_name] = (lookup.__module__, 
+    """Register a ajax_select lookup class."""
+    def get_channel_name(lookup):
+        """Makes sure channel names are unique"""
+        channel_name = lookup.__name__.lower()
+        if channel_name in register.channels:
+            i = 0
+            while "channel_name_%d" %i in register.channels:
+                i += 1
+            channel_name =  "channel_name_%d" %i
+        return channel_name
+    
+    channel_name = get_channel_name(lookup)
+    register.channels[channel_name] = (lookup.__module__, 
                                                         lookup.__name__)
     if admin is not None:
         admin.form = make_ajax_form(lookup.model, 
                                     {lookup.field_name: channel_name})
-        
+register.channels = {}
+
+
 def make_ajax_form(model,fieldlist,superclass=ModelForm):
     """ this will create a ModelForm subclass inserting
             AutoCompleteSelectMultipleField (many to many),
@@ -46,7 +59,6 @@ def make_ajax_form(model,fieldlist,superclass=ModelForm):
 
     for model_fieldname,channel in fieldlist.iteritems():
         f = make_ajax_field(model,model_fieldname,channel)
-        
         TheForm.declared_fields[model_fieldname] = f
         TheForm.base_fields[model_fieldname] = f
         setattr(TheForm,model_fieldname,f)
@@ -115,13 +127,7 @@ def make_ajax_field(model,model_fieldname,channel,**kwargs):
     return f
 
 def get_lookup(channel):
-    """ find the lookup class for the named channel.  this is used internally """
-    try:
-        lookup_label = settings.AJAX_LOOKUP_CHANNELS[channel]
-    except (KeyError, AttributeError):
-        raise ImproperlyConfigured("settings.AJAX_LOOKUP_CHANNELS not configured correctly for %r" % channel)
-    # 'channel' : ('app.module','LookupClass')
-    # from app.module load LookupClass and instantiate
+    lookup_label = register.channels[channel]
     lookup_module = __import__( lookup_label[0],{},{},[''])
     lookup_class = getattr(lookup_module,lookup_label[1] )
     return lookup_class()
