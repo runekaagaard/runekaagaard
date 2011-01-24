@@ -110,5 +110,5 @@ AJAX_LOOKUP_CHANNELS = {
     # or write a custom search channel and specify that using a TUPLE
     #'contact' : ('peoplez.lookups', 'ContactLookup'),
     # this specifies to look for the class `ContactLookup` in the `peoplez.lookups` module
-    'musician': ('test_app.admin', 'MusicianLookup'),
+    #'musician': ('test_app.admin', 'MusicianLookup'),
 }
