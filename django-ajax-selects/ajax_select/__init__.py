@@ -11,7 +11,14 @@ from django.forms.models import ModelForm
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _, ugettext
 
-
+def register(lookup, admin=None):
+    channel_name = lookup.__name__.lower()
+    settings.AJAX_LOOKUP_CHANNELS[channel_name] = (lookup.__module__, 
+                                                        lookup.__name__)
+    if admin is not None:
+        admin.form = make_ajax_form(lookup.model, 
+                                    {lookup.field_name: channel_name})
+        
 def make_ajax_form(model,fieldlist,superclass=ModelForm):
     """ this will create a ModelForm subclass inserting
             AutoCompleteSelectMultipleField (many to many),
@@ -113,46 +120,10 @@ def get_lookup(channel):
         lookup_label = settings.AJAX_LOOKUP_CHANNELS[channel]
     except (KeyError, AttributeError):
         raise ImproperlyConfigured("settings.AJAX_LOOKUP_CHANNELS not configured correctly for %r" % channel)
-
-    if isinstance(lookup_label,dict):
-        # 'channel' : dict(model='app.model', search_field='title' )
-        # generate a simple channel dynamically
-        return make_channel( lookup_label['model'], lookup_label['search_field'] )
-    else:
-        # 'channel' : ('app.module','LookupClass')
-        # from app.module load LookupClass and instantiate
-        lookup_module = __import__( lookup_label[0],{},{},[''])
-        lookup_class = getattr(lookup_module,lookup_label[1] )
-        return lookup_class()
-
-
-def make_channel(app_model,search_field):
-    """ used in get_lookup
-        app_model :   app_name.model_name
-        search_field :  the field to search against and to display in search results """
-    from django.db import models
-    app_label, model_name = app_model.split(".")
-    model = models.get_model(app_label, model_name)
-
-    class AjaxChannel(object):
-
-        def get_query(self,q,request):
-            """ return a query set searching for the query string q """
-            kwargs = { "%s__icontains" % search_field : q }
-            return model.objects.filter(**kwargs).order_by(search_field)
-
-        def format_item(self,obj):
-            """ format item for simple list of currently selected items """
-            return unicode(obj)
-
-        def format_result(self,obj):
-            """ format search result for the drop down of search results. may include html """
-            return unicode(obj)
-
-        def get_objects(self,ids):
-            """ get the currently selected objects """
-            return model.objects.filter(pk__in=ids).order_by(search_field)
-
-    return AjaxChannel()
+    # 'channel' : ('app.module','LookupClass')
+    # from app.module load LookupClass and instantiate
+    lookup_module = __import__( lookup_label[0],{},{},[''])
+    lookup_class = getattr(lookup_module,lookup_label[1] )
+    return lookup_class()
 
 

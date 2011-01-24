@@ -34,12 +34,12 @@ class AutoCompleteSelectWidget(forms.widgets.TextInput):
 
         lookup = get_lookup(self.channel)
         if value:
-            objs = lookup.get_objects([value])
+            objs = lookup.get_by_ids([value])
             try:
                 obj = objs[0]
             except IndexError:
                 raise Exception("%s cannot find object:%s" % (lookup, value))
-            current_result = mark_safe(lookup.format_item( obj ) )
+            current_result = mark_safe(lookup.render_selected( obj ) )
         else:
             current_result = ''
             
@@ -90,7 +90,7 @@ class AutoCompleteSelectField(forms.fields.CharField):
     def clean(self, value):
         if value:
             lookup = get_lookup(self.channel)
-            objs = lookup.get_objects( [ value] )
+            objs = lookup.get_by_ids( [ value] )
             if len(objs) != 1:
                 # someone else might have deleted it while you were editing
                 # or your channel is faulty
@@ -140,12 +140,12 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
         else:
             current_ids = "|"
 
-        objects = lookup.get_objects(value)
+        objects = lookup.get_by_ids(value)
 
         # text repr of currently selected items
         current_repr_json = []
         for obj in objects:
-            repr = lookup.format_item(obj)
+            repr = lookup.render_selected(obj)
             current_repr_json.append( """new Array("%s",%s)""" % (escapejs(repr),obj.pk) )
 
         current_reprs = mark_safe("new Array(%s)" % ",".join(current_repr_json))
