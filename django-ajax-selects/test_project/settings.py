@@ -100,15 +100,3 @@ INSTALLED_APPS = (
     'ajax_select',
     'test_app',
 )
-
-AJAX_LOOKUP_CHANNELS = {
-    # the simplest case, pass a DICT with the model and field to search against :
-    #'musician' : dict(model='test_app.musician',search_field='first_name'),
-    # this generates a simple channel
-    # specifying the model Track in the music app, and searching against the 'title' field
-
-    # or write a custom search channel and specify that using a TUPLE
-    #'contact' : ('peoplez.lookups', 'ContactLookup'),
-    # this specifies to look for the class `ContactLookup` in the `peoplez.lookups` module
-    #'musician': ('test_app.admin', 'MusicianLookup'),
-}
