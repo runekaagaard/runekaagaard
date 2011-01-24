@@ -13,9 +13,7 @@ from django.utils.translation import ugettext as _
 
 
 class AutoCompleteSelectWidget(forms.widgets.TextInput):
-
     """  widget to select a model """
-    
     add_link = None
     
     def __init__(self,
@@ -162,7 +160,7 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
             'current_name':current_name,
             'current_ids':current_ids,
             'current_reprs':current_reprs,
-            'help_text':self.help_text if self.show_help_text else '',
+            'help_text':help_text,
             'extra_attrs': mark_safe(flatatt(final_attrs)),
             'func_slug': self.html_id.replace("-",""),
             'add_link' : self.add_link,
