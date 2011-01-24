@@ -9,8 +9,8 @@ def ajax_lookup(request,channel):
     """ this view supplies results for both foreign keys and many to many fields """
     
     def empty_response(): return HttpResponse('') # suspicious
-    def format_item(lookup_channel, item):
-        itemf = lookup_channel.format_item(item)
+    def render_selected(lookup_channel, item):
+        itemf = lookup_channel.render_selected(item)
         itemf = itemf.replace("\n","").replace("|","&brvbar;")
         return itemf
     
@@ -26,17 +26,17 @@ def ajax_lookup(request,channel):
     lookup_channel = get_lookup(channel)
     
     if 'q' in request_by_method:
-        instances = lookup_channel.get_query(request_by_method['q'],request)
+        instances = lookup_channel.get_by_query(request_by_method['q'],request)
         results = []
         for item in instances:
-            itemf = format_item(lookup_channel, item)
-            resultf = lookup_channel.format_result(item)
+            itemf = render_selected(lookup_channel, item)
+            resultf = lookup_channel.render_dropdown_item(item)
             resultf = resultf.replace("\n","").replace("|","&brvbar;")
             results.append( "|".join((unicode(item.pk),itemf,resultf)) )
         return HttpResponse("\n".join(results))
     elif 'id' in request_by_method:
-        instance = lookup_channel.get_query_by_id(request_by_method['id'],request)
-        return HttpResponse(format_item(lookup_channel, instance))
+        instance = lookup_channel.get_by_pk(request_by_method['id'],request)
+        return HttpResponse(render_selected(lookup_channel, instance))
     else:
         return empty_response()
 

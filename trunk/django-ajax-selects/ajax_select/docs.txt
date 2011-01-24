@@ -119,19 +119,19 @@ from django.db.models import Q
 
 class ContactLookup(object):
 
-    def get_query(self,q,request):
+    def get_by_query(self,q,request):
         """ return a query set.  you also have access to request.user if needed """
         return Contact.objects.filter(Q(name__istartswith=q) | Q(fname__istartswith=q) | Q(lname__istartswith=q) | Q(email__icontains=q))
 
-    def format_result(self,contact):
+    def render_dropdown_item(self,contact):
         """ the search results display in the dropdown menu.  may contain html and multiple-lines. will remove any |  """
         return u"%s %s %s (%s)" % (contact.fname, contact.lname,contact.name,contact.email)
 
-    def format_item(self,contact):
+    def render_selected(self,contact):
         """ the display of a currently selected object in the area below the search box. html is OK """
         return unicode(contact)
 
-    def get_objects(self,ids):
+    def get_by_ids(self,ids):
         """ given a list of ids, return the objects ordered as you would like them on the admin page.
             this is for displaying the currently selected items (in the case of a ManyToMany field)
         """
@@ -146,7 +146,7 @@ from django.http import HttpResponseForbidden
 
 class ContactLookup(object):
 
-    def get_query(self,q,request):
+    def get_by_query(self,q,request):
         """ return a query set.  you also have access to request.user if needed """
           if not request.user.is_authenticated():
              raise HttpResponseForbidden() # raising an exception, django will catch this and return an Http 403
