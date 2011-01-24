@@ -12,9 +12,22 @@ from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _, ugettext
 
 def register(lookup, admin=None):
-    """Register a ajax_select lookup class."""
+    """
+    Register a ajax_select lookup class.
+    
+    Args:
+        lookup: The ajax select lookup class. Should overwrite:
+            model: The model where the ajax field resides
+            field_name: Name of the ajax field.
+            related_model: The model the ajax field holds a relation to.
+            related_search_fields: Iterable with fields that should be searched
+                in, when the user types in the search box.
+                
+        admin (optional): A given model admin class which form field will be
+            converted to an ajax select type.
+    """
     def get_channel_name(lookup):
-        """Makes sure channel names are unique"""
+        """Makes sure channel names are unique."""
         channel_name = lookup.__name__.lower()
         if channel_name in register.channels:
             i = 0
@@ -24,13 +37,18 @@ def register(lookup, admin=None):
         return channel_name
     
     channel_name = get_channel_name(lookup)
-    register.channels[channel_name] = (lookup.__module__, 
-                                                        lookup.__name__)
+    register.channels[channel_name] = (lookup.__module__, lookup.__name__)
     if admin is not None:
         admin.form = make_ajax_form(lookup.model, 
                                     {lookup.field_name: channel_name})
 register.channels = {}
 
+def get_lookup(channel):
+    """Returns an instance of the lookup class for a given channel."""
+    lookup_label = register.channels[channel]
+    lookup_module = __import__( lookup_label[0],{},{},[''])
+    lookup_class = getattr(lookup_module,lookup_label[1] )
+    return lookup_class()
 
 def make_ajax_form(model,fieldlist,superclass=ModelForm):
     """ this will create a ModelForm subclass inserting
@@ -39,16 +57,17 @@ def make_ajax_form(model,fieldlist,superclass=ModelForm):
 
         where specified in the fieldlist:
 
-            dict(fieldname='channel',...)
+            dict(fieldname='channel', ...)
 
         usage:
             class YourModelAdmin(Admin):
                 ...
-                form = make_ajax_form(YourModel,dict(contacts='contact',author='contact'))
-
-            where 'contacts' is a many to many field, specifying to use the lookup channel 'contact'
-            and
-            where 'author' is a foreign key field, specifying here to also use the lookup channel 'contact'
+                form = make_ajax_form(YourModel, dict(contacts='contact',
+                                                      author='contact'))
+                                                     
+            where 'contacts' is a many to many field, specifying to use the 
+            lookup channel 'contact' and where 'author' is a foreign key field, 
+            specifying here to also use the lookup channel 'contact'
 
     """
 
@@ -79,9 +98,9 @@ def make_ajax_field(model,model_fieldname,channel,**kwargs):
             required - default's to db field's (not) blank
             """
 
-    from ajax_select.fields import AutoCompleteField, \
-                                   AutoCompleteSelectMultipleField, \
-                                   AutoCompleteSelectField
+    from ajax_select.fields import (AutoCompleteField,
+                                   AutoCompleteSelectMultipleField,
+                                   AutoCompleteSelectField)
 
     field = model._meta.get_field(model_fieldname)
     if kwargs.has_key('label'):
@@ -125,11 +144,5 @@ def make_ajax_field(model,model_fieldname,channel,**kwargs):
             **kwargs
             )
     return f
-
-def get_lookup(channel):
-    lookup_label = register.channels[channel]
-    lookup_module = __import__( lookup_label[0],{},{},[''])
-    lookup_class = getattr(lookup_module,lookup_label[1] )
-    return lookup_class()
 
 
