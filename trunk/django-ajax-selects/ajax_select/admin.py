@@ -3,7 +3,8 @@ from django.contrib import admin
 from django.db.models import Q
 
 class AjaxSelectAdmin(admin.ModelAdmin):
-    """ in order to get + popup functions subclass this or do the same hook inside of your get_form """
+    """In order to get + popup functions subclass this or do the same hook 
+    inside of your get_form."""
     
     def get_form(self, request, obj=None, **kwargs):
         form = super(AjaxSelectAdmin,self).get_form(request,obj,**kwargs)
@@ -11,9 +12,7 @@ class AjaxSelectAdmin(admin.ModelAdmin):
         return form
 
 class AjaxSelectLookup(object):
-    """
-    Default ajax select lookup class to subclass from.
-    """
+    """Default ajax select lookup class to subclass from."""
     def render_dropdown_item(self, obj): return obj.__str__()
     def render_selected(self, obj): return obj.__str__()
     
@@ -25,8 +24,7 @@ class AjaxSelectLookup(object):
     
     def get_by_query(self, q, request):
         """Uses self.related_search_fields to build a queryset. This is the
-        only place self.related_search_fields is used.
-        """
+        only place self.related_search_fields is used."""
         qs = Q()
         for field in self.related_search_fields:
             qs = qs | Q(**{'%s__icontains' % field: q})

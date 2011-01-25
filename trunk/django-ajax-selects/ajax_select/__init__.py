@@ -67,7 +67,7 @@ def make_ajax_form(model, channels):
 
 
 def make_ajax_field(model, model_fieldname, channel, **kwargs):
-    """Returns a Ajaxyfied form field.""""
+    """Returns a Ajaxyfied form field."""
     from ajax_select.fields import (AutoCompleteField,
                                    AutoCompleteSelectMultipleField,
                                    AutoCompleteSelectField)
