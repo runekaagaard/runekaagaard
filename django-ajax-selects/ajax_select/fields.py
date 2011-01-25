@@ -238,26 +238,21 @@ class AutoCompleteWidget(forms.TextInput):
 
 class AutoCompleteField(forms.CharField):
     """
-    Field uses an AutoCompleteWidget to lookup possible completions using a channel and stores raw text (not a foreign key)
+    Field uses an AutoCompleteWidget to lookup possible completions using a 
+    channel and stores raw text (not a foreign key)
     """
     channel = None
 
     def __init__(self, channel, *args, **kwargs):
         self.channel = channel
-
         widget = AutoCompleteWidget(channel,help_text=kwargs.get('help_text', _('Enter text to search.')))
-
         defaults = {'max_length': 255,'widget': widget}
         defaults.update(kwargs)
-
         super(AutoCompleteField, self).__init__(*args, **defaults)
 
-
-
-
-
 def _check_can_add(self,user,model):
-    """ check if the user can add the model, deferring first to the channel if it implements can_add() \
+    """ check if the user can add the model, deferring first to the channel if 
+        it implements can_add() \
         else using django's default perm check. \
         if it can add, then enable the widget to show the + link """
     lookup = get_lookup(self.channel)
@@ -270,7 +265,8 @@ def _check_can_add(self,user,model):
         self.widget.add_link = reverse('add_popup',kwargs={'app_label':model._meta.app_label,'model':model._meta.object_name.lower()})
 
 def autoselect_fields_check_can_add(form,model,user):
-    """ check the form's fields for any autoselect fields and enable their widgets with + sign add links if permissions allow"""
+    """ check the form's fields for any autoselect fields and enable their 
+    widgets with + sign add links if permissions allow"""
     for name,form_field in form.declared_fields.iteritems():
         if isinstance(form_field,(AutoCompleteSelectMultipleField,AutoCompleteSelectField)):
             db_field = model._meta.get_field_by_name(name)[0]
