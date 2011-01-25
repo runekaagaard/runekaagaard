@@ -11,7 +11,7 @@ from django.forms.models import ModelForm
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _, ugettext
 
-def register(lookup, admin=None):
+def register(lookup, admin=None, inlines=None):
     """
     Register a ajax_select lookup class.
     
@@ -41,6 +41,9 @@ def register(lookup, admin=None):
     register.channels[channel_name] = channel
     if admin is not None:
         admin.form = ajaxify_form(lookup, channel_name)
+        if inlines is not None:
+            for inline in inlines:
+                inline.form = admin.form
 register.channels = {}
 
 def get_lookup(channel_name):
