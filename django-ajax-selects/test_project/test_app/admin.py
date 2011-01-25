@@ -20,6 +20,7 @@ class BaseAdmin(AjaxSelectAdmin):
 class SongAdmin(BaseAdmin): pass
 class SongInline(admin.TabularInline): 
     model = Song
+    extra = 1
 
 # Mood
 class MoodAdmin(BaseAdmin): pass

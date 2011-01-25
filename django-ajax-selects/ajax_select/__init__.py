@@ -59,7 +59,7 @@ def get_lookup(channel_name):
     return lookup_class()
 
 def ajaxify_form(form, lookup, channel_name):
-    """Returns a ajax select form where fields have been ajaxyfied."""
+    """Ajaxifies given form by changing field in lookup to ajax field."""
     def ajaxify_field(model, model_fieldname, channel_name, **kwargs):
         """Returns a Ajaxyfied form field."""
         from ajax_select.fields import (AutoCompleteField,
@@ -69,7 +69,7 @@ def ajaxify_form(form, lookup, channel_name):
         if 'label' not in kwargs:
             kwargs['label'] = _(capfirst(unicode(field.verbose_name)))
         if 'help_text' not in kwargs:
-            if isinstance(field.help_text,basestring):
+            if isinstance(field.help_text, basestring):
                 kwargs['help_text'] = _(field.help_text)
             else:
                 kwargs['help_text'] = field.help_text
@@ -83,6 +83,6 @@ def ajaxify_form(form, lookup, channel_name):
         else:
             return AutoCompleteField(channel_name, **kwargs)
         
-    f = ajaxify_field(lookup.model,lookup.field_name, channel_name)
+    f = ajaxify_field(lookup.model, lookup.field_name, channel_name)
     form.declared_fields[lookup.field_name] = f
     setattr(form, lookup.field_name, f)
