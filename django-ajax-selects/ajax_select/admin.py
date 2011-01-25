@@ -14,6 +14,9 @@ class AjaxSelectAdmin(admin.ModelAdmin):
 
 class AjaxSelectLookup(object):
     """Default ajax select lookup class to subclass from."""
+    
+    inlines = []
+    
     def render_dropdown_item(self, obj): return obj.__str__()
     def render_selected(self, obj): return obj.__str__()
     
