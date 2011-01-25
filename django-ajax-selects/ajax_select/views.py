@@ -19,8 +19,6 @@ def ajax_lookup(request,channel):
     elif request.method == "POST":
         request_by_method = request.POST
     else: return empty_response()    
-    if 'q' not in request_by_method and 'id' not in request_by_method:
-        return empty_response()
     
     lookup_channel = get_lookup(channel)
     
@@ -57,4 +55,3 @@ def add_popup(request,app_label,model):
                 response.content.replace('dismissAddAnotherPopup',
                                          'didAddPopup' ) )
     return response
-
