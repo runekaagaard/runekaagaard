@@ -21,7 +21,7 @@ def register(lookup, admin=None):
             field_name: Name of the ajax field.
             related_model: The model the ajax field holds a relation to.
             related_search_fields: Iterable with fields that should be searched
-                in, when the user types in the search box.
+                in when the user types in the search box.
                 
         admin (optional): A given model admin class which form field will be
             converted to an ajax select type.
@@ -52,6 +52,7 @@ def get_lookup(channel):
     return lookup_class()
 
 def make_ajax_form(model, channels):
+    """Returns a ajax select form where fields have been ajaxyfied."""
     class AjaxForm(ModelForm):
         class Meta:
             pass
@@ -66,6 +67,7 @@ def make_ajax_form(model, channels):
 
 
 def make_ajax_field(model, model_fieldname, channel, **kwargs):
+    """Returns a Ajaxyfied form field.""""
     from ajax_select.fields import (AutoCompleteField,
                                    AutoCompleteSelectMultipleField,
                                    AutoCompleteSelectField)
@@ -81,9 +83,9 @@ def make_ajax_field(model, model_fieldname, channel, **kwargs):
     if 'required' not in kwargs:
         kwargs['required'] = not field.blank
         
-    if isinstance(field,ManyToManyField):
+    if isinstance(field, ManyToManyField):
         return AutoCompleteSelectMultipleField(channel, **kwargs)
-    elif isinstance(field,ForeignKey):
+    elif isinstance(field, ForeignKey):
         return AutoCompleteSelectField(channel, **kwargs)
     else:
         return AutoCompleteField(channel, **kwargs)
