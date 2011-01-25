@@ -7,9 +7,24 @@ class Musician(models.Model):
     instrument = models.CharField(max_length=100)
     
     def __unicode__(self): return '%s %s' % (self.first_name, self.last_name)
-
+    
 class Album(models.Model):
     musician = models.ForeignKey(Musician, help_text=None)
     name = models.CharField(max_length=100)
     release_date = models.DateField()
     num_stars = models.IntegerField()
+    
+    def __unicode__(self): return self.name
+
+class Mood(models.Model):
+    mood = models.CharField(max_length=100)
+    description = models.TextField()
+    
+    def __unicode__(self): return self.mood
+    
+class Song(models.Model):
+    album = models.ForeignKey(Album)
+    title = models.CharField(max_length=100)
+    mood = models.ForeignKey(Mood, help_text=None)
+    
+    def __unicode__(self): return self.title
