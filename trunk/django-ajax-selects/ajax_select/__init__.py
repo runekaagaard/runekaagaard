@@ -36,11 +36,17 @@ def register(lookup, admin=None):
             channel_name =  "channel_name_%d" %i
         return channel_name
     
+    class AjaxForm(ModelForm):
+        class Meta: Model = None
+        setattr(Meta, 'model', lookup.model)
+    
     channel_name = get_channel_name(lookup)
     channel = (lookup.__module__, lookup.__name__)
     register.channels[channel_name] = channel
     if admin is not None:
-        admin.form = ajaxify_form(lookup, channel_name)
+        admin.form = admin.form if hasattr(admin.form, 'declared_fields') \
+                                else AjaxForm
+        ajaxify_form(admin.form, lookup, channel_name)
         for inline in lookup.inlines:
             inline.form = admin.form
 register.channels = {}
@@ -52,12 +58,8 @@ def get_lookup(channel_name):
     lookup_class = getattr(lookup_module,lookup_label[1] )
     return lookup_class()
 
-def ajaxify_form(lookup, channel_name):
+def ajaxify_form(form, lookup, channel_name):
     """Returns a ajax select form where fields have been ajaxyfied."""
-    class AjaxForm(ModelForm):
-        class Meta: Model = None
-        setattr(Meta, 'model', lookup.model)
-        
     def ajaxify_field(model, model_fieldname, channel_name, **kwargs):
         """Returns a Ajaxyfied form field."""
         from ajax_select.fields import (AutoCompleteField,
@@ -82,6 +84,5 @@ def ajaxify_form(lookup, channel_name):
             return AutoCompleteField(channel_name, **kwargs)
         
     f = ajaxify_field(lookup.model,lookup.field_name, channel_name)
-    AjaxForm.declared_fields[lookup.field_name] = f
-    setattr(AjaxForm,lookup.field_name, f)
-    return AjaxForm
+    form.declared_fields[lookup.field_name] = f
+    setattr(form, lookup.field_name, f)
