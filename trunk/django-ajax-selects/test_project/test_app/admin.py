@@ -28,13 +28,14 @@ class SongMoodLookup(AjaxSelectLookup):
     field_name = 'mood'
     related_model = Mood
     related_search_fields = ('mood', 'description')
+    inlines = [SongInline]
     
 # Album.
 class AlbumAdmin(BaseAdmin): inlines = [SongInline]
 
 # Musician.
 class MusicianAdmin(BaseAdmin): pass
-class MusicianLookup(AjaxSelectLookup):
+class AlbumMusicianLookup(AjaxSelectLookup):
     model = Album
     field_name = 'musician'
     related_model = Musician
@@ -43,8 +44,8 @@ class MusicianLookup(AjaxSelectLookup):
     def render_selected(self, obj): return u"%s - %s" % (obj, obj.instrument)
     
 # Register.
-ajax_select.register(SongMoodLookup, SongAdmin, [SongInline])
-ajax_select.register(MusicianLookup, AlbumAdmin)
+ajax_select.register(SongMoodLookup, SongAdmin)
+ajax_select.register(AlbumMusicianLookup, AlbumAdmin)
 
 admin.site.register(Musician, MusicianAdmin)
 admin.site.register(Mood, MoodAdmin)

@@ -41,9 +41,9 @@ def register(lookup, admin=None, inlines=None):
     register.channels[channel_name] = channel
     if admin is not None:
         admin.form = ajaxify_form(lookup, channel_name)
-        if inlines is not None:
-            for inline in inlines:
-                inline.form = admin.form
+        #if 'inlines' in lookup:
+        for inline in lookup.inlines:
+            inline.form = admin.form
 register.channels = {}
 
 def get_lookup(channel_name):
