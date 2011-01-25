@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib import admin
-from ajax_select import make_ajax_form
 
 class Musician(models.Model):
     first_name = models.CharField(max_length=50)
