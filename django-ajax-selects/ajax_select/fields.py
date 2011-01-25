@@ -92,8 +92,10 @@ class AutoCompleteSelectField(forms.fields.CharField):
             if len(objs) != 1:
                 # someone else might have deleted it while you were editing
                 # or your channel is faulty
-                # out of the scope of this field to do anything more than tell you it doesn't exist
-                raise forms.ValidationError(u"%s cannot find object: %s" % (lookup,value))
+                # out of the scope of this field to do anything more than tell 
+                # you it doesn't exist
+                raise forms.ValidationError(u"%s cannot find object: %s" % 
+                                            (lookup,value))
             return objs[0]
         else:
             if self.required:
@@ -134,7 +136,8 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
         current_name = "" # the text field starts empty
         # eg. value = [3002L, 1194L]
         if value:
-            current_ids = "|" + "|".join( str(pk) for pk in value ) + "|" # |pk|pk| of current
+            # |pk|pk| of current
+            current_ids = "|" + "|".join( str(pk) for pk in value ) + "|" 
         else:
             current_ids = "|"
 
@@ -144,7 +147,8 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
         current_repr_json = []
         for obj in objects:
             repr = lookup.render_selected(obj)
-            current_repr_json.append( """new Array("%s",%s)""" % (escapejs(repr),obj.pk) )
+            current_repr_json.append( """new Array("%s",%s)""" % (
+                                                        escapejs(repr),obj.pk))
 
         current_reprs = mark_safe("new Array(%s)" % ",".join(current_repr_json))
         if self.show_help_text:
@@ -166,7 +170,8 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
             'add_link' : self.add_link,
             'admin_media_prefix' : settings.ADMIN_MEDIA_PREFIX,
         }
-        return mark_safe(render_to_string(('autocompleteselectmultiple_%s.html' % self.channel, 'autocompleteselectmultiple.html'),context))
+        return mark_safe(render_to_string(('autocompleteselectmultiple_%s.html' 
+            % self.channel, 'autocompleteselectmultiple.html'), context))
 
     def value_from_datadict(self, data, files, name):
         # eg. u'members': [u'|229|4688|190|']
@@ -176,9 +181,7 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
 
 
 class AutoCompleteSelectMultipleField(forms.fields.CharField):
-
-    """ form field to select multiple models for a ManyToMany db field """
-
+    """Form field to select multiple models for a ManyToMany db field."""
     channel = None
 
     def __init__(self, channel, *args, **kwargs):
@@ -198,11 +201,10 @@ class AutoCompleteSelectMultipleField(forms.fields.CharField):
     def check_can_add(self,user,model):
         _check_can_add(self,user,model)
 
-
 class AutoCompleteWidget(forms.TextInput):
-    """
-    Widget to select a search result and enter the result as raw text in the text input field.
-    the user may also simply enter text and ignore any auto complete suggestions.
+    """Widget to select a search result and enter the result as raw text in the 
+    text input field. The user may also simply enter text and ignore any auto 
+    complete suggestions.
     """
     channel = None
     help_text = ''
@@ -211,15 +213,12 @@ class AutoCompleteWidget(forms.TextInput):
     def __init__(self, channel, *args, **kwargs):
         self.channel = channel
         self.help_text = kwargs.pop('help_text', '')
-
         super(AutoCompleteWidget, self).__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None):
-
         value = value or ''
         final_attrs = self.build_attrs(attrs)
         self.html_id = final_attrs.pop('id', name)
-
         context = {
             'current_name': value,
             'current_id': value,
@@ -230,31 +229,28 @@ class AutoCompleteWidget(forms.TextInput):
             'extra_attrs':mark_safe(flatatt(final_attrs)),
             'func_slug': self.html_id.replace("-","")
         }
-
         templates = ('autocomplete_%s.html' % self.channel,
                      'autocomplete.html')
         return mark_safe(render_to_string(templates, context))
 
-
 class AutoCompleteField(forms.CharField):
-    """
-    Field uses an AutoCompleteWidget to lookup possible completions using a 
-    channel and stores raw text (not a foreign key)
+    """Field uses an AutoCompleteWidget to lookup possible completions using a 
+    channel and stores raw text (not a foreign key).
     """
     channel = None
 
     def __init__(self, channel, *args, **kwargs):
         self.channel = channel
-        widget = AutoCompleteWidget(channel,help_text=kwargs.get('help_text', _('Enter text to search.')))
+        widget = AutoCompleteWidget(channel,help_text=kwargs.get('help_text', 
+                                                    _('Enter text to search.')))
         defaults = {'max_length': 255,'widget': widget}
         defaults.update(kwargs)
         super(AutoCompleteField, self).__init__(*args, **defaults)
 
 def _check_can_add(self,user,model):
-    """ check if the user can add the model, deferring first to the channel if 
-        it implements can_add() \
-        else using django's default perm check. \
-        if it can add, then enable the widget to show the + link """
+    """Check if the user can add the model, deferring first to the channel if 
+        it implements can_add() else using django's default perm check. If it 
+        can add, then enable the widget to show the + link."""
     lookup = get_lookup(self.channel)
     try:
         can_add = lookup.can_add(user,model)
@@ -262,13 +258,15 @@ def _check_can_add(self,user,model):
         ctype = ContentType.objects.get_for_model(model)
         can_add = user.has_perm("%s.add_%s" % (ctype.app_label,ctype.model))
     if can_add:
-        self.widget.add_link = reverse('add_popup',kwargs={'app_label':model._meta.app_label,'model':model._meta.object_name.lower()})
+        self.widget.add_link = reverse('add_popup',kwargs={
+            'app_label': model._meta.app_label,
+            'model':model._meta.object_name.lower()})
 
 def autoselect_fields_check_can_add(form,model,user):
-    """ check the form's fields for any autoselect fields and enable their 
-    widgets with + sign add links if permissions allow"""
+    """Check the form's fields for any autoselect fields and enable their 
+    widgets with + sign add links if permissions allow."""
     for name,form_field in form.declared_fields.iteritems():
-        if isinstance(form_field,(AutoCompleteSelectMultipleField,AutoCompleteSelectField)):
+        if isinstance(form_field,(AutoCompleteSelectMultipleField, 
+                                  AutoCompleteSelectField)):
             db_field = model._meta.get_field_by_name(name)[0]
             form_field.check_can_add(user,db_field.rel.to)
-
