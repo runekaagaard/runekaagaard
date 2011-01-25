@@ -40,52 +40,46 @@ def register(lookup, admin=None):
     channel = (lookup.__module__, lookup.__name__)
     register.channels[channel_name] = channel
     if admin is not None:
-        admin.form = make_ajax_form(lookup.model, 
-                                    {lookup.field_name: channel_name})
+        admin.form = ajaxify_form(lookup, channel_name)
 register.channels = {}
 
-def get_lookup(channel):
+def get_lookup(channel_name):
     """Returns an instance of the lookup class for a given channel."""
-    lookup_label = register.channels[channel]
+    lookup_label = register.channels[channel_name]
     lookup_module = __import__(lookup_label[0],{},{},[''])
     lookup_class = getattr(lookup_module,lookup_label[1] )
     return lookup_class()
 
-def make_ajax_form(model, channels):
+def ajaxify_form(lookup, channel_name):
     """Returns a ajax select form where fields have been ajaxyfied."""
     class AjaxForm(ModelForm):
-        class Meta:
-            pass
-        setattr(Meta, 'model', model)
-
-    for model_fieldname, channel in channels.iteritems():
-        f = make_ajax_field(model,model_fieldname,channel)
-        AjaxForm.declared_fields[model_fieldname] = f
-        setattr(AjaxForm,model_fieldname,f)
-    
-    return AjaxForm
-
-
-def make_ajax_field(model, model_fieldname, channel, **kwargs):
-    """Returns a Ajaxyfied form field."""
-    from ajax_select.fields import (AutoCompleteField,
-                                   AutoCompleteSelectMultipleField,
-                                   AutoCompleteSelectField)
-
-    field = model._meta.get_field(model_fieldname)
-    if 'label' not in kwargs:
-        kwargs['label'] = _(capfirst(unicode(field.verbose_name)))
-    if 'help_text' not in kwargs:
-        if isinstance(field.help_text,basestring):
-            kwargs['help_text'] = _(field.help_text)
-        else:
-            kwargs['help_text'] = field.help_text
-    if 'required' not in kwargs:
-        kwargs['required'] = not field.blank
+        class Meta: Model = None
+        setattr(Meta, 'model', lookup.model)
         
-    if isinstance(field, ManyToManyField):
-        return AutoCompleteSelectMultipleField(channel, **kwargs)
-    elif isinstance(field, ForeignKey):
-        return AutoCompleteSelectField(channel, **kwargs)
-    else:
-        return AutoCompleteField(channel, **kwargs)
+    def ajaxify_field(model, model_fieldname, channel_name, **kwargs):
+        """Returns a Ajaxyfied form field."""
+        from ajax_select.fields import (AutoCompleteField,
+                                       AutoCompleteSelectMultipleField,
+                                       AutoCompleteSelectField)
+        field = model._meta.get_field(model_fieldname)
+        if 'label' not in kwargs:
+            kwargs['label'] = _(capfirst(unicode(field.verbose_name)))
+        if 'help_text' not in kwargs:
+            if isinstance(field.help_text,basestring):
+                kwargs['help_text'] = _(field.help_text)
+            else:
+                kwargs['help_text'] = field.help_text
+        if 'required' not in kwargs:
+            kwargs['required'] = not field.blank
+            
+        if isinstance(field, ManyToManyField):
+            return AutoCompleteSelectMultipleField(channel_name, **kwargs)
+        elif isinstance(field, ForeignKey):
+            return AutoCompleteSelectField(channel_name, **kwargs)
+        else:
+            return AutoCompleteField(channel_name, **kwargs)
+        
+    f = ajaxify_field(lookup.model,lookup.field_name, channel_name)
+    AjaxForm.declared_fields[lookup.field_name] = f
+    setattr(AjaxForm,lookup.field_name, f)
+    return AjaxForm

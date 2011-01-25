@@ -10,10 +10,8 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
-
-
 class AutoCompleteSelectWidget(forms.widgets.TextInput):
-    """  widget to select a model """
+    """Widget to select a model."""
     add_link = None
     
     def __init__(self,
@@ -25,11 +23,9 @@ class AutoCompleteSelectWidget(forms.widgets.TextInput):
         self.help_text = help_text
 
     def render(self, name, value, attrs=None):
-
         value = value or ''
         final_attrs = self.build_attrs(attrs)
         self.html_id = final_attrs.pop('id', name)
-
         lookup = get_lookup(self.channel)
         if value:
             objs = lookup.get_by_ids([value])
@@ -40,7 +36,6 @@ class AutoCompleteSelectWidget(forms.widgets.TextInput):
             current_result = mark_safe(lookup.render_selected( obj ) )
         else:
             current_result = ''
-            
         try:
             search_help = lookup.get_search_help()
         except AttributeError:
@@ -49,7 +44,8 @@ class AutoCompleteSelectWidget(forms.widgets.TextInput):
         context = {
                 'name': name,
                 'html_id' : self.html_id,
-                'lookup_url': reverse('ajax_lookup',kwargs={'channel':self.channel}),
+                'lookup_url': reverse('ajax_lookup',
+                                      kwargs={'channel':self.channel}),
                 'current_id': value,
                 'current_result': current_result,
                 'help_text': self.help_text,
@@ -59,31 +55,30 @@ class AutoCompleteSelectWidget(forms.widgets.TextInput):
                 'admin_media_prefix' : settings.ADMIN_MEDIA_PREFIX,
                 'search_help': search_help,
                 }
-
-        return mark_safe(render_to_string(('autocompleteselect_%s.html' % self.channel, 'autocompleteselect.html'),context))
+        return mark_safe(render_to_string((
+             'autocompleteselect_%s.html' % self.channel, 
+             'autocompleteselect.html'),context))
 
     def value_from_datadict(self, data, files, name):
-
         got = data.get(name, None)
         if got:
             return long(got)
         else:
             return None
 
-
-
 class AutoCompleteSelectField(forms.fields.CharField):
-
-    """  form field to select a model for a ForeignKey db field """
-
+    """Form field to select a model for a ForeignKey db field."""
     channel = None
 
     def __init__(self, channel, *args, **kwargs):
         self.channel = channel
         widget = kwargs.get("widget", False)
         if not widget or not isinstance(widget, AutoCompleteSelectWidget):
-            kwargs["widget"] = AutoCompleteSelectWidget(channel=channel,help_text=kwargs.get('help_text',_('Enter text to search.')))
-        super(AutoCompleteSelectField, self).__init__(max_length=255,*args, **kwargs)
+            kwargs["widget"] = AutoCompleteSelectWidget(
+                channel=channel, 
+                help_text=kwargs.get('help_text', _('Enter text to search.')))
+        super(AutoCompleteSelectField, self).__init__(max_length=255,*args, 
+                                                      **kwargs)
 
     def clean(self, value):
         if value:
@@ -105,14 +100,10 @@ class AutoCompleteSelectField(forms.fields.CharField):
     def check_can_add(self,user,model):
         _check_can_add(self,user,model)
 
-
-
 class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
-
-    """ widget to select multiple models """
-    
+    """Widget to select multiple models."""
     add_link = None
-    
+
     def __init__(self,
                  channel,
                  help_text='',
@@ -124,15 +115,11 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
         self.show_help_text = show_help_text
 
     def render(self, name, value, attrs=None):
-
         if value is None:
             value = []
-
         final_attrs = self.build_attrs(attrs)
         self.html_id = final_attrs.pop('id', name)
-
         lookup = get_lookup(self.channel)
-
         current_name = "" # the text field starts empty
         # eg. value = [3002L, 1194L]
         if value:
@@ -142,14 +129,12 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
             current_ids = "|"
 
         objects = lookup.get_by_ids(value)
-
         # text repr of currently selected items
         current_repr_json = []
         for obj in objects:
             repr = lookup.render_selected(obj)
             current_repr_json.append( """new Array("%s",%s)""" % (
                                                         escapejs(repr),obj.pk))
-
         current_reprs = mark_safe("new Array(%s)" % ",".join(current_repr_json))
         if self.show_help_text:
             help_text = self.help_text
@@ -177,9 +162,6 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
         # eg. u'members': [u'|229|4688|190|']
         return [long(val) for val in data.get(name,'').split('|') if val]
 
-
-
-
 class AutoCompleteSelectMultipleField(forms.fields.CharField):
     """Form field to select multiple models for a ManyToMany db field."""
     channel = None
@@ -190,7 +172,8 @@ class AutoCompleteSelectMultipleField(forms.fields.CharField):
         # admin will also show help text, so by default do not show it in widget
         # if using in a normal form then set to True so the widget shows help
         show_help_text = kwargs.get('show_help_text',False)
-        kwargs['widget'] = AutoCompleteSelectMultipleWidget(channel=channel,help_text=help_text,show_help_text=show_help_text)
+        kwargs['widget'] = AutoCompleteSelectMultipleWidget(
+            channel=channel, help_text=help_text, show_help_text=show_help_text)
         super(AutoCompleteSelectMultipleField, self).__init__(*args, **kwargs)
 
     def clean(self, value):
