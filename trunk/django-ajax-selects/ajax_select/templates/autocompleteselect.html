@@ -30,7 +30,7 @@ jQuery(document).ready(function($){{% block script %}
 	}
 	$("#{{html_id}}_text").result(receiveResult);
 	function addKiller_{{func_slug}}(repr,id) {
-		kill = "<span class='iconic' id='kill_{{ html_id }}'>X</span>	";
+		kill = "<a href='#' title='{% trans "Clear selection" %}' class='deletelink' id='kill_{{ html_id }}'></a>	";
 		if(repr){
 			$( "#{{html_id}}_on_deck" ).empty();
 			$( "#{{html_id}}_on_deck" ).append( "<div>" + kill + repr + "</div>");
@@ -40,6 +40,7 @@ jQuery(document).ready(function($){{% block script %}
 		$("#kill_{{ html_id }}").click(function() { return function(){
 			kill_{{func_slug}}();
 			$("#{{html_id}}_on_deck").trigger("killed");
+			return false;
 		}}() );
 	}
 	function kill_{{func_slug}}() {
