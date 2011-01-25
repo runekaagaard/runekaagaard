@@ -1,7 +1,7 @@
 from django.contrib import admin
 from ajax_select.admin import AjaxSelectAdmin, AjaxSelectLookup
 import ajax_select
-from models import Musician, Album, Song, Mood
+from models import Musician, Album, Song, Mood, Groove
 from django.conf import settings
 
 class BaseAdmin(AjaxSelectAdmin):
@@ -29,7 +29,16 @@ class SongMoodLookup(AjaxSelectLookup):
     related_model = Mood
     related_search_fields = ('mood', 'description')
     inlines = [SongInline]
-    
+
+# Groove
+class GrooveAdmin(BaseAdmin): pass
+class SongGrooveLookup(AjaxSelectLookup):
+    model = Song
+    field_name = 'groove'
+    related_model = Groove
+    related_search_fields = ('groove', 'description')
+    inlines = [SongInline]
+
 # Album.
 class AlbumAdmin(BaseAdmin): inlines = [SongInline]
 
@@ -45,10 +54,12 @@ class AlbumMusicianLookup(AjaxSelectLookup):
     
 # Register.
 ajax_select.register(SongMoodLookup, SongAdmin)
+ajax_select.register(SongGrooveLookup, SongAdmin)
 ajax_select.register(AlbumMusicianLookup, AlbumAdmin)
 
 admin.site.register(Musician, MusicianAdmin)
 admin.site.register(Mood, MoodAdmin)
+admin.site.register(Groove, GrooveAdmin)
 admin.site.register(Song, SongAdmin)
 admin.site.register(Album, AlbumAdmin)
 

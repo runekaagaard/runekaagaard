@@ -21,10 +21,17 @@ class Mood(models.Model):
     description = models.TextField()
     
     def __unicode__(self): return self.mood
+
+class Groove(models.Model):
+    groove = models.CharField(max_length=100)
+    description = models.TextField()
+    
+    def __unicode__(self): return self.groove
     
 class Song(models.Model):
     album = models.ForeignKey(Album)
     title = models.CharField(max_length=100)
     mood = models.ForeignKey(Mood, help_text=None)
+    groove = models.ForeignKey(Groove, help_text=None)
     
     def __unicode__(self): return self.title
