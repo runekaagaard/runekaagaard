@@ -1,4 +1,3 @@
-
 /* requires RelatedObjects.js */
 
 function didAddPopup(win,newId,newRepr) {
@@ -26,7 +25,8 @@ function setup_autocompleteselect(useid,url) {
         $("#"+useid+"").val(data[0]);
         $("#"+useid+"_text").val("");
         addKiller = function(repr,id) {
-            kill = "<span class='iconic' id='kill_"+useid+"'>X</span>	";
+        	
+            kill = "<a class='deletelink' id='kill_"+useid+"'></a>";
             if(repr){
                 $( "#"+useid+"_on_deck" ).empty();
                 $( "#"+useid+"_on_deck" ).append( "<div>" + kill + repr + "</div>");
@@ -44,7 +44,7 @@ function setup_autocompleteselect(useid,url) {
     });
     if($("#"+useid+"").val()) { // add X for initial value if any
         addKiller = function(repr,id) {
-            kill = "<span class='iconic' id='kill_"+useid+"'>X</span>	";
+            kill = "<a class='deletelink' id='kill_"+useid+"'></a>";
             if(repr){
                 $( "#"+useid+"_on_deck" ).empty();
                 $( "#"+useid+"_on_deck" ).append( "<div>" + kill + repr + "</div>");
@@ -71,7 +71,7 @@ function setup_autocompleteselect(useid,url) {
         $("#"+useid+"").val(data[0]);
         $("#"+useid+"_text").val("");
         addKiller = function(repr,id) {
-            kill = "<span class='iconic' id='kill_"+useid+"'>X</span>	";
+            kill = "<a class='deletelink' id='kill_"+useid+"'></a>";
             if(repr){
                 $( "#"+useid+"_on_deck" ).empty();
                 $( "#"+useid+"_on_deck" ).append( "<div>" + kill + repr + "</div>");
@@ -112,7 +112,7 @@ function setup_autocompleteselectmultiple(useid,url){
                 $("#"+useid+"").val( $("#"+useid+"").val() + id + "|");
                 function addKiller_(repr,id) {
                     killer_id = "kill_"+useid+"" + id
-                    kill = "<span class='iconic' id='"+killer_id+"'>X</span>	";
+                    kill = "<a class='deletelink' id='kill_"+useid+"'></a>";
                     $( "#"+useid+"_on_deck" ).append("<div id='"+useid+"_on_deck_" + id +"'>" + kill + repr + " </div>");
                     $("#"+killer_id).click(function(frozen_id) { return function(){
                         $("#"+useid+"").val( $("#"+useid+"").val().replace( "|" + frozen_id + "|", "|" ) );
@@ -131,7 +131,7 @@ function setup_autocompleteselectmultiple(useid,url){
         repr = its[0];
         id = its[1]
         killer_id = "kill_"+useid+"" + id
-        kill = "<span class='iconic' id='"+killer_id+"'>X</span>	";
+        kill = "<a class='deletelink' id='kill_"+useid+"'></a>";;
         $( "#"+useid+"_on_deck" ).append("<div id='"+useid+"_on_deck_" + id +"'>" + kill + repr + " </div>");
         $("#"+killer_id).click(function(frozen_id) { return function(){
             $("#"+useid+"").val( $("#"+useid+"").val().replace( "|" + frozen_id + "|", "|" ) );
@@ -151,7 +151,7 @@ function setup_autocompleteselectmultiple(useid,url){
                 $("#"+useid+"").val( $("#"+useid+"").val() + id + "|");
                 function addKiller_(repr,id) {
                     killer_id = "kill_"+useid+"" + id
-                    kill = "<span class='iconic' id='"+killer_id+"'>X</span>	";
+                    kill = "<a class='deletelink' id='kill_"+useid+"'></a>";
                     $( "#"+useid+"_on_deck" ).append("<div id='"+useid+"_on_deck_" + id +"'>" + kill + repr + " </div>");
                     $("#"+killer_id).click(function(frozen_id) { return function(){
                         $("#"+useid+"").val( $("#"+useid+"").val().replace( "|" + frozen_id + "|", "|" ) );
