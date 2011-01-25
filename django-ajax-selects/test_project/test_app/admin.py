@@ -8,7 +8,7 @@ class BaseAdmin(AjaxSelectAdmin):
     class Media:
         css = {
             "all": ("/media/css/jquery.autocomplete.css",
-                    "/media/css/iconic.css",
+                    
                     )
         }
         js = ("https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js",
