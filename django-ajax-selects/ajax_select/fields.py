@@ -65,40 +65,6 @@ class AutoCompleteSelectWidget(forms.widgets.TextInput):
         else:
             return None
 
-class AutoCompleteSelectField(forms.fields.CharField):
-    """Form field to select a model for a ForeignKey db field."""
-    channel = None
-
-    def __init__(self, channel, *args, **kwargs):
-        self.channel = channel
-        widget = kwargs.get("widget", False)
-        if not widget or not isinstance(widget, AutoCompleteSelectWidget):
-            kwargs["widget"] = AutoCompleteSelectWidget(
-                channel=channel, 
-                help_text=kwargs.get('help_text', _('Enter text to search.')))
-        super(AutoCompleteSelectField, self).__init__(max_length=255,*args, 
-                                                      **kwargs)
-
-    def clean(self, value):
-        if value:
-            lookup = get_lookup(self.channel)
-            objs = lookup.get_by_ids( [ value] )
-            if len(objs) != 1:
-                # someone else might have deleted it while you were editing
-                # or your channel is faulty
-                # out of the scope of this field to do anything more than tell 
-                # you it doesn't exist
-                raise forms.ValidationError(u"%s cannot find object: %s" % 
-                                            (lookup,value))
-            return objs[0]
-        else:
-            if self.required:
-                raise forms.ValidationError(self.error_messages['required'])
-            return None
-
-    def check_can_add(self,user,model):
-        _check_can_add(self,user,model)
-
 class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
     """Widget to select multiple models."""
     add_link = None
@@ -161,7 +127,54 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
         # eg. u'members': [u'|229|4688|190|']
         return [long(val) for val in data.get(name,'').split('|') if val]
 
-class AutoCompleteSelectMultipleField(forms.fields.CharField):
+class AutoCompleteSelectFieldBase(forms.fields.CharField):
+    def check_can_add(self, user, model):
+        """Check if the user can add the model, deferring first to the channel if 
+        it implements can_add() else using django's default perm check. If it 
+        can add, then enable the widget to show the + link."""
+        lookup = get_lookup(self.channel)
+        try:
+            can_add = lookup.can_add(user,model)
+        except AttributeError:
+            ctype = ContentType.objects.get_for_model(model)
+            can_add = user.has_perm("%s.add_%s" % (ctype.app_label,ctype.model))
+        if can_add:
+            self.widget.add_link = reverse('add_popup',kwargs={
+                'app_label': model._meta.app_label,
+                'model':model._meta.object_name.lower()})
+
+class AutoCompleteSelectField(AutoCompleteSelectFieldBase):
+    """Form field to select a model for a ForeignKey db field."""
+    channel = None
+
+    def __init__(self, channel, *args, **kwargs):
+        self.channel = channel
+        widget = kwargs.get("widget", False)
+        if not widget or not isinstance(widget, AutoCompleteSelectWidget):
+            kwargs["widget"] = AutoCompleteSelectWidget(
+                channel=channel, 
+                help_text=kwargs.get('help_text', _('Enter text to search.')))
+        super(AutoCompleteSelectField, self).__init__(max_length=255,*args, 
+                                                      **kwargs)
+
+    def clean(self, value):
+        if value:
+            lookup = get_lookup(self.channel)
+            objs = lookup.get_by_ids( [ value] )
+            if len(objs) != 1:
+                # someone else might have deleted it while you were editing
+                # or your channel is faulty
+                # out of the scope of this field to do anything more than tell 
+                # you it doesn't exist
+                raise forms.ValidationError(u"%s cannot find object: %s" % 
+                                            (lookup,value))
+            return objs[0]
+        else:
+            if self.required:
+                raise forms.ValidationError(self.error_messages['required'])
+            return None
+
+class AutoCompleteSelectMultipleField(AutoCompleteSelectFieldBase):
     """Form field to select multiple models for a ManyToMany db field."""
     channel = None
 
@@ -179,9 +192,6 @@ class AutoCompleteSelectMultipleField(forms.fields.CharField):
         if not value and self.required:
             raise forms.ValidationError(self.error_messages['required'])
         return value # a list of IDs from widget value_from_datadict
-
-    def check_can_add(self,user,model):
-        _check_can_add(self,user,model)
 
 class AutoCompleteWidget(forms.TextInput):
     """Widget to select a search result and enter the result as raw text in the 
@@ -229,21 +239,6 @@ class AutoCompleteField(forms.CharField):
         defaults.update(kwargs)
         super(AutoCompleteField, self).__init__(*args, **defaults)
 
-def _check_can_add(self,user,model):
-    """Check if the user can add the model, deferring first to the channel if 
-        it implements can_add() else using django's default perm check. If it 
-        can add, then enable the widget to show the + link."""
-    lookup = get_lookup(self.channel)
-    try:
-        can_add = lookup.can_add(user,model)
-    except AttributeError:
-        ctype = ContentType.objects.get_for_model(model)
-        can_add = user.has_perm("%s.add_%s" % (ctype.app_label,ctype.model))
-    if can_add:
-        self.widget.add_link = reverse('add_popup',kwargs={
-            'app_label': model._meta.app_label,
-            'model':model._meta.object_name.lower()})
-
 def check_can_add(form, model,user):
     """Check the form's fields for any autoselect fields and enable their 
     widgets with + sign add links if permissions allow."""
@@ -252,4 +247,3 @@ def check_can_add(form, model,user):
                                   AutoCompleteSelectField)):
             db_field = model._meta.get_field_by_name(name)[0]
             form_field.check_can_add(user,db_field.rel.to)
-            print name
