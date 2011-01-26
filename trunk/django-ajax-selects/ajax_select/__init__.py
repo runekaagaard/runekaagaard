@@ -39,7 +39,7 @@ def register(lookup, admin=None):
     class AjaxForm(ModelForm):
         class Meta: Model = None
         setattr(Meta, 'model', lookup.model)
-    
+        
     channel_name = get_channel_name(lookup)
     channel = (lookup.__module__, lookup.__name__)
     register.channels[channel_name] = channel

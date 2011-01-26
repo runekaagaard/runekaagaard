@@ -1,4 +1,4 @@
-from ajax_select.fields import autoselect_fields_check_can_add
+from ajax_select.fields import check_can_add
 from django.contrib import admin
 from django.db.models import Q
 
@@ -9,7 +9,9 @@ class AjaxSelectAdmin(admin.ModelAdmin):
     
     def get_form(self, request, obj=None, **kwargs):
         form = super(AjaxSelectAdmin,self).get_form(request,obj,**kwargs)
-        autoselect_fields_check_can_add(form,self.model,request.user)
+        for inline in self.inlines:
+            check_can_add(inline.form, inline.model, request.user)
+        check_can_add(form, self.model, request.user)
         return form
 
 class AjaxSelectLookup(object):
