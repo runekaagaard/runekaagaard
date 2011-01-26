@@ -1,13 +1,24 @@
-from ajax_select.fields import check_can_add
+from ajax_select.fields import (AutoCompleteSelectField,
+                                AutoCompleteSelectMultipleField)
 from django.contrib import admin
 from django.db.models import Q
+
 
 class AjaxSelectAdmin(admin.ModelAdmin):
     """Ajax select base ModelAdmin class. Subclass this to make the plus(+)
     sign work correctly.
     """
-    
+            
     def get_form(self, request, obj=None, **kwargs):
+        def check_can_add(form, model,user):
+            """Check the form's fields for any autoselect fields and enable 
+            their widgets with + sign add links if permissions allow."""
+            for name,form_field in form.declared_fields.iteritems():
+                if isinstance(form_field,(AutoCompleteSelectMultipleField, 
+                                          AutoCompleteSelectField)):
+                    db_field = model._meta.get_field_by_name(name)[0]
+                    form_field.check_can_add(user,db_field.rel.to)
+                
         form = super(AjaxSelectAdmin,self).get_form(request,obj,**kwargs)
         for inline in self.inlines:
             check_can_add(inline.form, inline.model, request.user)
