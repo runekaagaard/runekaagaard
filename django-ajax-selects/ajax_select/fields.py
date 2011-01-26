@@ -1,4 +1,3 @@
-
 from ajax_select import get_lookup
 from django import forms
 from django.conf import settings
@@ -245,7 +244,7 @@ def _check_can_add(self,user,model):
             'app_label': model._meta.app_label,
             'model':model._meta.object_name.lower()})
 
-def autoselect_fields_check_can_add(form,model,user):
+def check_can_add(form, model,user):
     """Check the form's fields for any autoselect fields and enable their 
     widgets with + sign add links if permissions allow."""
     for name,form_field in form.declared_fields.iteritems():
@@ -253,3 +252,4 @@ def autoselect_fields_check_can_add(form,model,user):
                                   AutoCompleteSelectField)):
             db_field = model._meta.get_field_by_name(name)[0]
             form_field.check_can_add(user,db_field.rel.to)
+            print name

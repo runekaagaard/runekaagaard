@@ -221,19 +221,19 @@ class ContactMailingForm(models.ModelForm):
 
 Note that ajax_selects does not need to be in an admin.  Popups will still use an admin view (the registered admin for the model being added), even if your form does not.
 
-1. subclass `AjaxSelectAdmin` or include the `autoselect_fields_check_can_add` hook in your admin's `get_form()`  [see AjaxSelectAdmin]
+1. subclass `AjaxSelectAdmin` or include the `check_can_add` hook in your admin's `get_form()`  [see AjaxSelectAdmin]
 
 {{{
     def get_form(self, request, obj=None, **kwargs):
         form = super(AjaxSelectAdmin,self).get_form(request,obj,**kwargs)
-        autoselect_fields_check_can_add(form,self.model,request.user)
+        check_can_add(form,self.model,request.user)
         return form
 }}}
 
 2. Make sure that `js/ajax_select.js` is included in your admin's media or in your site's admin js stack.
 
 
-`autoselect_fields_check_can_add(form,model,user)`
+`check_can_add(form,model,user)`
 
 This checks if the user has permission to add the model, 
 delegating first to the channel if that implements `can_add(user,model)`
