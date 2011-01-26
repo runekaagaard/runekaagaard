@@ -85,12 +85,3 @@ class AutoCompleteField(forms.CharField):
         defaults = {'max_length': 255,'widget': widget}
         defaults.update(kwargs)
         super(AutoCompleteField, self).__init__(*args, **defaults)
-
-def check_can_add(form, model,user):
-    """Check the form's fields for any autoselect fields and enable their 
-    widgets with + sign add links if permissions allow."""
-    for name,form_field in form.declared_fields.iteritems():
-        if isinstance(form_field,(AutoCompleteSelectMultipleField, 
-                                  AutoCompleteSelectField)):
-            db_field = model._meta.get_field_by_name(name)[0]
-            form_field.check_can_add(user,db_field.rel.to)
